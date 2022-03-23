@@ -14,14 +14,14 @@ type Client struct {
 	request Request
 }
 
-func NewClient(request Request) *Client {
+func NewClient(silent bool) *Client {
 	if instance != nil {
 		fmt.Println("Getting from instance")
 		return instance
 	}
 
 	client := &Client{
-		request: request,
+		request: NewHttpRequestClient(silent),
 		baseUrl: "https://query2.finance.yahoo.com/v10/finance/quoteSummary",
 	}
 
@@ -29,6 +29,10 @@ func NewClient(request Request) *Client {
 	fmt.Println("Getting a new instance")
 
 	return client
+}
+
+func (c *Client) SetRequestClient(request Request) {
+	c.request = request
 }
 
 func (c *Client) IncomeStatementHistoryQuarterly(symbol string) ([]IncomeStatement, error) {

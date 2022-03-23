@@ -1,11 +1,14 @@
 package yahooapi
 
 import (
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
+	"sync"
+	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Request interface {
@@ -13,12 +16,36 @@ type Request interface {
 }
 
 type HttpRequest struct {
+	logger     *logrus.Logger
+	silent     bool
+	cache      map[string]string
+	lastUpdate time.Time
+	sync.RWMutex
 }
 
-type JsonRequest struct {
+func NewHttpRequestClient(silent bool) *HttpRequest {
+	logger := logrus.New()
+
+	logger.SetFormatter(&logrus.JSONFormatter{})
+	logger.SetOutput(os.Stdout)
+	logger.SetLevel(logrus.InfoLevel)
+
+	return &HttpRequest{
+		logger: logger,
+		silent: silent,
+		cache:  map[string]string{},
+	}
 }
 
 func (r *HttpRequest) GetResponseBody(url string) (string, error) {
+	val, exists := r.cache[url]
+	if exists && !r.shouldRefreshCache() {
+		if !r.silent {
+			r.logger.Info(fmt.Sprintf("Getting %s from cache", url))
+		}
+		return val, nil
+	}
+
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", err
@@ -31,37 +58,37 @@ func (r *HttpRequest) GetResponseBody(url string) (string, error) {
 		return "", err
 	}
 
-	return string(body), nil
+	res := string(body)
+
+	r.Lock()
+	defer r.Unlock()
+
+	r.cache[url] = res
+
+	r.setCacheUpdatedTime()
+
+	if !r.silent {
+		r.logger.Info(fmt.Sprintf("Getting %s from api call", url))
+	}
+
+	return res, nil
 }
 
-func (r *JsonRequest) GetResponseBody(url string) (string, error) {
-	if strings.Contains(url, "earningsHistory") {
-		return readFile("./example/earnings_history.json")
-	}
-
-	if strings.Contains(url, "incomeStatementHistoryQuarterly") {
-		return readFile("./example/income_statement_history_quarterly.json")
-	}
-
-	if strings.Contains(url, "balanceSheetHistoryQuarterly") {
-		return readFile("./example/balance_sheet_history_quarterly.json")
-	}
-
-	return "", errors.New("could not read file")
+func (r *HttpRequest) GetCache() map[string]string {
+	return r.cache
 }
 
-func readFile(path string) (string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return "", err
+func (r *HttpRequest) shouldRefreshCache() bool {
+	if r.lastUpdate.IsZero() {
+		return true
 	}
 
-	defer file.Close()
+	now := time.Now()
+	duration := time.Minute * 60
 
-	content, err := ioutil.ReadAll(file)
-	if err != nil {
-		return "", err
-	}
+	return r.lastUpdate.Add(duration).Before(now)
+}
 
-	return string(content), nil
+func (r *HttpRequest) setCacheUpdatedTime() {
+	r.lastUpdate = time.Now()
 }

@@ -6,8 +6,16 @@ import (
 	yahooapi "github.com/MihaiBlebea/yahoo-api-go"
 )
 
+func getClient() *yahooapi.Client {
+	client := yahooapi.NewClient(true)
+	client.SetRequestClient(&yahooapi.JsonRequest{})
+
+	return client
+}
+
 func TestIncomeStatementHistoryQuarterly(t *testing.T) {
-	client := yahooapi.NewClient(&yahooapi.JsonRequest{})
+	client := getClient()
+
 	res, err := client.IncomeStatementHistoryQuarterly("AAPL")
 	if err != nil {
 		t.Error(err)
@@ -20,7 +28,8 @@ func TestIncomeStatementHistoryQuarterly(t *testing.T) {
 }
 
 func TestEarningsHistory(t *testing.T) {
-	client := yahooapi.NewClient(&yahooapi.JsonRequest{})
+	client := getClient()
+
 	res, err := client.EarningsHistory("AAPL")
 	if err != nil {
 		t.Error(err)
@@ -33,7 +42,8 @@ func TestEarningsHistory(t *testing.T) {
 }
 
 func TestBalnceSheetHistoryQuarterly(t *testing.T) {
-	client := yahooapi.NewClient(&yahooapi.JsonRequest{})
+	client := getClient()
+
 	res, err := client.BalanceSheetHistoryQuarterly("AAPL")
 	if err != nil {
 		t.Error(err)
