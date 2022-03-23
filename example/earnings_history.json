@@ -1,0 +1,110 @@
+{
+	"quoteSummary": {
+		"result": [
+			{
+				"earningsHistory": {
+					"history": [
+						{
+							"maxAge": 1,
+							"epsActual": {
+								"raw": 0.91,
+								"fmt": "0.91"
+							},
+							"epsEstimate": {
+								"raw": 0.82,
+								"fmt": "0.82"
+							},
+							"epsDifference": {
+								"raw": 0.09,
+								"fmt": "0.09"
+							},
+							"surprisePercent": {
+								"raw": 0.11,
+								"fmt": "11.00%"
+							},
+							"quarter": {
+								"raw": 1619740800,
+								"fmt": "2021-04-30"
+							},
+							"period": "-4q"
+						},
+						{
+							"maxAge": 1,
+							"epsActual": {
+								"raw": 1.04,
+								"fmt": "1.04"
+							},
+							"epsEstimate": {
+								"raw": 1.01,
+								"fmt": "1.01"
+							},
+							"epsDifference": {
+								"raw": 0.03,
+								"fmt": "0.03"
+							},
+							"surprisePercent": {
+								"raw": 0.03,
+								"fmt": "3.00%"
+							},
+							"quarter": {
+								"raw": 1627689600,
+								"fmt": "2021-07-31"
+							},
+							"period": "-3q"
+						},
+						{
+							"maxAge": 1,
+							"epsActual": {
+								"raw": 1.17,
+								"fmt": "1.17"
+							},
+							"epsEstimate": {
+								"raw": 1.11,
+								"fmt": "1.11"
+							},
+							"epsDifference": {
+								"raw": 0.06,
+								"fmt": "0.06"
+							},
+							"surprisePercent": {
+								"raw": 0.054,
+								"fmt": "5.40%"
+							},
+							"quarter": {
+								"raw": 1635638400,
+								"fmt": "2021-10-31"
+							},
+							"period": "-2q"
+						},
+						{
+							"maxAge": 1,
+							"epsActual": {
+								"raw": 1.32,
+								"fmt": "1.32"
+							},
+							"epsEstimate": {
+								"raw": 1.22,
+								"fmt": "1.22"
+							},
+							"epsDifference": {
+								"raw": 0.1,
+								"fmt": "0.1"
+							},
+							"surprisePercent": {
+								"raw": 0.081999995,
+								"fmt": "8.20%"
+							},
+							"quarter": {
+								"raw": 1643587200,
+								"fmt": "2022-01-31"
+							},
+							"period": "-1q"
+						}
+					],
+					"maxAge": 86400
+				}
+			}
+		],
+		"error": null
+	}
+}
