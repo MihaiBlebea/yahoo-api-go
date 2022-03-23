@@ -38,8 +38,12 @@ func NewHttpRequestClient(silent bool) *HttpRequest {
 }
 
 func (r *HttpRequest) GetResponseBody(url string) (string, error) {
+	if r.shouldRefreshCache() {
+		r.clearCache()
+	}
+
 	val, exists := r.cache[url]
-	if exists && !r.shouldRefreshCache() {
+	if exists {
 		if !r.silent {
 			r.logger.Info(fmt.Sprintf("Getting %s from cache", url))
 		}
@@ -91,4 +95,11 @@ func (r *HttpRequest) shouldRefreshCache() bool {
 
 func (r *HttpRequest) setCacheUpdatedTime() {
 	r.lastUpdate = time.Now()
+}
+
+func (r *HttpRequest) clearCache() {
+	r.Lock()
+	defer r.Unlock()
+
+	r.cache = map[string]string{}
 }
